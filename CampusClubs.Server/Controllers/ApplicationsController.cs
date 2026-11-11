@@ -20,7 +20,8 @@ namespace CampusClubs.Server.Controllers
             {
                 UserID = dto.UserID,
                 ClubID = dto.ClubID,
-                Status = "Подано"
+                Status = "Подано",
+                Answers = dto.Answers.Select(a => new ApplicationAnswer { Question = a.Question, Answer = a.Answer }).ToList()
             };
             _db.Applications.Add(app);
             await _db.SaveChangesAsync();
@@ -31,6 +32,7 @@ namespace CampusClubs.Server.Controllers
         public async Task<IActionResult> GetUserApplications(int userID)
         {
             var apps = await _db.Applications
+                .Include(a => a.Answers)
                 .Include(a => a.ClubID)
                 .Where(a => a.UserID == userID)
                 .Select(a => new

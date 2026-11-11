@@ -7,5 +7,6 @@
         public int ClubID { get; set; }
         public string Status { get; set; } = "Подано"; // Значения: Подано, собеседование, собеседование, принято, отклонено 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public List<ApplicationAnswer> Answers { get; set; } = new();
     }
 }
