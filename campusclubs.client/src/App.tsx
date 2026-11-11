@@ -8,7 +8,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         <div className="min-h-screen bg-gray-50">
             <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <span className="text-xl font-bold text-blue-700">UniOrgs</span>
+                    <span className="text-xl font-bold text-blue-700">CampusClubs</span>
                     <div className="flex gap-6">
                         <Link to="/" className="text-gray-600 hover:text-blue-600 font-medium">Каталог</Link>
                         <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Мои заявки</Link>

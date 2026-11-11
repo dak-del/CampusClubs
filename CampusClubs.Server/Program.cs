@@ -1,9 +1,13 @@
+using Microsoft.EntityFrameworkCore;
 using CampusClubs.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDBContext>();
+builder.Services.AddDbContext<AppDBContext>(options =>
+    options.UseSqlite("Data Source=campusclubs.db"));
+
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
