@@ -13,7 +13,7 @@ export default function ClubDetail() {
     const [step, setStep] = useState<'info' | 'form'>('info');
 
     useEffect(() => {
-        api.getClubs(id).then(data => {
+        api.getClub(id).then(data => {
             setClub(data);
             setQuestions(data.questions || [
                 { id: 1, text: "Почему вы хотите вступить?" },

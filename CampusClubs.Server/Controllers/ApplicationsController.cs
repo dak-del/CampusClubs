@@ -56,11 +56,5 @@ namespace CampusClubs.Server.Controllers
 
             });
         }
-        [HttpGet("users/{userID}/organizations/{clubID}/status")]
-        public async Task<IActionResult> GetUserStatus(int userID, int clubID) 
-        {
-            var member = await _db.ClubMembers
-                .FirstOrDefaultAsync
-        }
     }
 }
