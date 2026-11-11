@@ -25,7 +25,7 @@ namespace CampusClubs.Server.Controllers
             };
             _db.Applications.Add(app);
             await _db.SaveChangesAsync();
-            return Ok(new {id = app.ID, status = app.Status, message = "Заявка успешно подана"});
+            return Ok(new { id = app.ID, status = app.Status, message = "Заявка успешно подана" });
         }
 
         [HttpGet("user/{userID}")]
@@ -44,6 +44,23 @@ namespace CampusClubs.Server.Controllers
                 })
                 .ToListAsync();
             return Ok(apps);
+        }
+        [HttpGet("ID")]
+        public async Task<IActionResult> GetByID(int id) 
+        {
+            var club = await _db.Clubs.FindAsync(id);
+            if (club == null) return NotFound();
+            return Ok(new
+            {
+                club.ID, club.Name, club.Description, club.Direction, club.ContactInfo,
+
+            });
+        }
+        [HttpGet("users/{userID}/organizations/{clubID}/status")]
+        public async Task<IActionResult> GetUserStatus(int userID, int clubID) 
+        {
+            var member = await _db.ClubMembers
+                .FirstOrDefaultAsync
         }
     }
 }

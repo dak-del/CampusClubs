@@ -1,8 +1,8 @@
 const API_URL = "http://localhost:5000/api";
 
 export const api = {
-    getClubs: async () => {
-        const res = await fetch(`${API_URL}/organizations`);
+    getClubs: async (id: string | undefined) => {
+        const res = await fetch(`${API_URL}/organizations/${id}`);
         return res.json();
     },
     submitApplication: async (data: any) => {
@@ -16,5 +16,10 @@ export const api = {
     getUserApplications: async (userID: number) => {
         const res = await fetch(`${API_URL}/applications/user/${userID}`);
         return res.json();
+    },
+    getUserStatus: async (userID: number, clubID: string | undefined) => {
+        const res = await fetch(`${API_URL}/users/${userID}/organizations/${clubID}/status`);
+        const data = await res.json();
+        return data.status;
     }
 }
