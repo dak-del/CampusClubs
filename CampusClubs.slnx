@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="campusclubs.client/campusclubs.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="CampusClubs.Server/CampusClubs.Server.csproj" />
+</Solution>
