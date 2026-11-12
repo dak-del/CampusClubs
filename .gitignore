@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/CampusClubs.Server/campusclubs.db
+/CampusClubs.Server/campusclubs.db-shm
+/CampusClubs.Server/campusclubs.db-wal
