@@ -26,7 +26,7 @@ public class UsersController : ControllerBase
                 {
                     m.ID,
                     m.ClubID,
-                    OrganizationName = _db.Clubs
+                    ClubName = _db.Clubs
                         .Where(o => o.ID == m.ClubID)
                         .Select(o => o.Name)
                         .FirstOrDefault() ?? "Неизвестно",
