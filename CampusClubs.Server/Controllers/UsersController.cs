@@ -46,4 +46,17 @@ public class UsersController : ControllerBase
             return Ok(new List<object>());
         }
     }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserById(int id)
+    {
+        var user = await _db.Users.FindAsync(id);
+        if (user == null) return NotFound(new { message = "Пользователь не найден" });
+
+        return Ok(new
+        {
+            user.ID,
+            user.FullName,
+            user.Email
+        });
+    }
 }

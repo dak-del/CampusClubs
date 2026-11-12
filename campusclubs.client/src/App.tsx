@@ -15,7 +15,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                             <span className="text-white font-bold text-xl">U</span>
                         </div>
                         <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            UniOrgs
+                            CampusClubs
                         </span>
                     </Link>
 
@@ -56,7 +56,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/catalog" element={<Catalog />} />
-                    <Route path="/org/:id" element={<OrgDetail />} />
+                    <Route path="/club/:id" element={<OrgDetail />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                 </Routes>
             </Layout>

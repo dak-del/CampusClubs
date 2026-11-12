@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { User as UserIcon, Mail, Hash, Calendar, AlertCircle } from 'lucide-react';
 import { api } from '../api';
 
 const statusLabels: Record<string, string> = {
@@ -20,6 +21,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function Dashboard() {
+    const [user, setUser] = useState<any>(null);
     const [apps, setApps] = useState<any[]>([]);
     const [memberships, setMemberships] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -30,90 +32,119 @@ export default function Dashboard() {
         const loadData = async () => {
             try {
                 setLoading(true);
-                setError(null);
+                const userId = 1; // Для демо
 
-                const userID = 1;
-
-                const [appsData, membershipsData] = await Promise.all([
-                    api.getUserApplications(userID),
-                    api.getUserMemberships(userID)
+                // Загружаем всё параллельно
+                const [userData, appsData, membershipsData] = await Promise.all([
+                    api.getUserProfile(userId),
+                    api.getUserApplications(userId),
+                    api.getUserMemberships(userId)
                 ]);
 
+                setUser(userData);
                 setApps(appsData);
                 setMemberships(membershipsData);
             } catch (err) {
-                setError('Не удалось загрузить данные. Попробуйте позже.');
                 console.error('Ошибка загрузки:', err);
             } finally {
                 setLoading(false);
             }
         };
-
         loadData();
     }, []);
-    const handleCancelApplication = async (appID: number) => {
-        if (!confirm('Вы уверены, что хотите отменить заявку?')) return;
+
+    const handleCancelApplication = async (appId: number) => {
+        if (!window.confirm('Вы уверены, что хотите отменить эту заявку? Это действие нельзя отменить.')) {
+            return;
+        }
 
         try {
-            await api.cancelApplication(appID);
-            setApps(apps.filter(a => a.ID !== appID));
-        } catch (err) {
-            alert('Ошибка отмены заявки');
+            await api.cancelApplication(appId);
+            setApps(prevApps => prevApps.filter(app => app.id !== appId));
+        } catch (error) {
+            console.error('Ошибка при отмене заявки:', error);
+            alert('Не удалось отменить заявку. Попробуйте позже.');
         }
     };
+
     if (loading) {
         return (
-            <div className="p-6 max-w-5xl mx-auto">
-                <div className="text-center py-12">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
                     <p className="mt-4 text-gray-600">Загрузка личного кабинета...</p>
                 </div>
             </div>
         );
     }
-    if (error) {
-        return (
-            <div className="p-6 max-w-5xl mx-auto">
-                <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-                    <p className="text-red-800 font-semibold">{error}</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="mt-4 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
-                    >
-                        Попробовать снова
-                    </button>
+
+    return (
+        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-5xl mx-auto">
+                <h1 className="text-3xl font-bold text-gray-900 mb-8">Личный кабинет</h1>
+
+                {/* Карточка профиля пользователя */}
+                {user && (
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8 flex flex-col md:flex-row items-start md:items-center gap-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white shadow-md flex-shrink-0">
+                            <UserIcon className="w-10 h-10" />
+                        </div>
+                        <div className="flex-grow">
+                            <h2 className="text-2xl font-bold text-gray-900">{user.fullName}</h2>
+                            <p className="text-gray-500 mb-4">Студент</p>
+                            <div className="flex flex-wrap gap-4">
+                                
+                                <div className="flex items-center gap-2 text-sm text-gray-700 bg-gray-100 px-3 py-1.5 rounded-lg">
+                                    <Mail className="w-4 h-4 text-gray-500" />
+                                    <span>{user.email}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 flex-shrink-0">
+                            <div className="text-center px-4 py-2 bg-blue-50 rounded-xl border border-blue-100">
+                                <p className="text-2xl font-bold text-blue-600">{apps.length}</p>
+                                <p className="text-xs text-blue-800 font-medium uppercase tracking-wide">Заявок</p>
+                            </div>
+                            <div className="text-center px-4 py-2 bg-green-50 rounded-xl border border-green-100">
+                                <p className="text-2xl font-bold text-green-600">{memberships.length}</p>
+                                <p className="text-xs text-green-800 font-medium uppercase tracking-wide">Членств</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Вкладки */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div className="border-b border-gray-200">
+                        <nav className="flex">
+                            <button
+                                onClick={() => setActiveTab('applications')}
+                                className={`flex-1 py-4 text-sm font-semibold text-center transition-colors relative ${activeTab === 'applications'
+                                        ? 'text-blue-600'
+                                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                                    }`}
+                            >
+                                Мои заявки
+                                {activeTab === 'applications' && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+                                )}
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('memberships')}
+                                className={`flex-1 py-4 text-sm font-semibold text-center transition-colors relative ${activeTab === 'memberships'
+                                        ? 'text-blue-600'
+                                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                                    }`}
+                            >
+                                Мои организации
+                                {activeTab === 'memberships' && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+                                )}
+                            </button>
+                        </nav>
+                    </div>
                 </div>
             </div>
-        );
-    }
-    return (
-        <div className="p-6 max-w-5xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Личный кабинет студента</h1>
-
-            {/* Вкладки: Заявки / Членства */}
-            <div className="mb-6 border-b border-gray-200">
-                <nav className="flex gap-8">
-                    <button
-                        onClick={() => setActiveTab('applications')}
-                        className={`pb-3 font-semibold transition ${activeTab === 'applications'
-                                ? 'text-blue-600 border-b-2 border-blue-600'
-                                : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                    >
-                        Мои заявки ({apps.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('memberships')}
-                        className={`pb-3 font-semibold transition ${activeTab === 'memberships'
-                                ? 'text-blue-600 border-b-2 border-blue-600'
-                                : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                    >
-                        Мои организации ({memberships.length})
-                    </button>
-                </nav>
-            </div>
-
             {/* Вкладка: Заявки */}
             {activeTab === 'applications' && (
                 <div className="bg-white rounded-xl shadow-md overflow-hIDden">
@@ -188,7 +219,7 @@ export default function Dashboard() {
                                     В организации с {new Date(m.joinedAt).toLocaleDateString('ru-RU')}
                                 </span>
                                 <Link
-                                    to={`/org/${m.organizationID}`}
+                                    to={`/club/${m.organizationID}`}
                                     className="text-blue-600 hover:underline text-sm font-medium"
                                 >
                                     Перейти →

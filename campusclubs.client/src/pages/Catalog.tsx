@@ -160,7 +160,7 @@ export default function Catalog() {
 
                                         {/* Кнопка */}
                                         <Link
-                                            to={`/org/${club.id}`}
+                                            to={`/club/${club.id}`}
                                             className={`block w-full text-center py-3 rounded-xl font-semibold transition-all ${userStatus === 'guest'
                                                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg'
                                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
