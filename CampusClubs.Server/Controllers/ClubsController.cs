@@ -51,4 +51,35 @@ public class ClubsController : ControllerBase
             }
         });
     }
+    [HttpGet("{userId}/clubs/{clubId}/status")]
+    public async Task<IActionResult> GetClubStatus(int userId, int clubId)
+    {
+        try
+        {
+            var member = await _db.ClubMembers
+                .FirstOrDefaultAsync(m => m.UserID == userId && m.ClubID == clubId);
+
+            if (member != null)
+            {
+                var role = await _db.Roles.FindAsync(member.RoleID);
+                string roleName = role?.Name ?? "Member";
+                return Ok(new { status = roleName == "President" ? "leader" : "member" });
+            }
+
+            var hasApplication = await _db.Applications
+                .AnyAsync(a => a.UserID == userId && a.ClubID == clubId &&
+                              (a.Status == "Submitted" || a.Status == "Reviewing" || a.Status == "Interview"));
+
+            if (hasApplication)
+            {
+                return Ok(new { status = "applicant" });
+            }
+
+            return Ok(new { status = "guest" });
+        }
+        catch
+        {
+            return Ok(new { status = "guest" });
+        }
+    }
 }
