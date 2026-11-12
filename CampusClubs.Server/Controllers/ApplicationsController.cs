@@ -39,11 +39,7 @@ namespace CampusClubs.Server.Controllers
             ClubName = a.Club != null ? a.Club.Name : "Неизвестно",
             a.Status,
             a.CreatedAt,
-            Comment = _db.ApplicationHistories
-                .Where(h => h.ApplicationID == a.ID)
-                .OrderByDescending(h => h.ChangedAt)
-                .Select(h => h.Comment)
-                .FirstOrDefault()
+            Comment = (string)null
         })
         .OrderByDescending(a => a.CreatedAt)
         .ToListAsync();

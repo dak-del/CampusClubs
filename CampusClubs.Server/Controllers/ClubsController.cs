@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CampusClubs.Server.Data; // Проверьте ваш namespace
+using CampusClubs.Server.Data; 
 using CampusClubs.Server.Models;
 
 namespace CampusClubs.Server.Controllers;
 
 [ApiController]
-[Route("api/clubs")] // <-- Явно указываем маршрут, чтобы избежать путаницы
+[Route("api/clubs")]
 public class ClubsController : ControllerBase
 {
     private readonly AppDBContext _db;
@@ -31,5 +31,24 @@ public class ClubsController : ControllerBase
             .ToListAsync();
 
         return Ok(clubs);
+    }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var club = await _db.Clubs.FindAsync(id);
+        if (club == null) return NotFound("Клуб не найден");
+
+        return Ok(new
+        {
+            club.ID,
+            club.Name,
+            club.Description,
+            club.Direction,
+            club.ContactInfo,
+            Questions = new[] {
+                new { id = 1, text = "Почему вы хотите вступить в наш клуб?" },
+                new { id = 2, text = "Какой у вас есть релевантный опыт?" }
+            }
+        });
     }
 }
