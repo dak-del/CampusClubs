@@ -1,76 +1,50 @@
-﻿import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+﻿import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { Home as HomeIcon, LayoutGrid, User } from 'lucide-react';
+import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import OrgDetail from './pages/ClubDetail';
 import Dashboard from './pages/Dashboard';
 
 function Layout({ children }: { children: React.ReactNode }) {
-    const linkBase =
-        'px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-150';
-
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 via-white to-slate-50">
-            {/* Тонкая декоративная сетка на фоне */}
-            <div
-                aria-hidden
-                className="pointer-events-none fixed inset-0 -z-10 opacity-[0.35]
-                           [background-image:linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)]
-                           [background-size:32px_32px]
-                           [mask-image:radial-gradient(ellipse_at_top,black,transparent_75%)]"
-            />
-
-            <nav className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
-                <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-                    <NavLink to="/" className="group flex items-center gap-2">
-                        <span className="grid h-9 w-9 place-items-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-600/30 transition-transform group-hover:scale-105">
-                            {/* простая иконка «кампус» */}
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M3 21h18" />
-                                <path d="M5 21V7l7-4 7 4v14" />
-                                <path d="M9 21v-6h6v6" />
-                            </svg>
+        <div className="min-h-screen bg-gray-50">
+            <nav className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-50 backdrop-blur-sm bg-white/95">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                    <Link to="/home" className="flex items-center gap-2">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                            <span className="text-white font-bold text-xl">U</span>
+                        </div>
+                        <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            UniOrgs
                         </span>
-                        <span className="text-lg font-bold tracking-tight text-slate-900">
-                            Campus<span className="text-blue-600">Clubs</span>
-                        </span>
-                    </NavLink>
+                    </Link>
 
-                    <div className="flex items-center gap-1 sm:gap-2">
-                        <NavLink
+                    <div className="flex gap-2">
+                        <Link
                             to="/"
-                            end
-                            className={({ isActive }) =>
-                                `${linkBase} ${isActive
-                                    ? 'bg-blue-50 text-blue-700'
-                                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                                }`
-                            }
+                            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all"
                         >
-                            Каталог
-                        </NavLink>
-                        <NavLink
+                            <HomeIcon className="w-5 h-5" />
+                            <span className="hidden md:inline">Главная</span>
+                        </Link>
+                        <Link
+                            to="/catalog"
+                            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all"
+                        >
+                            <LayoutGrid className="w-5 h-5" />
+                            <span className="hidden md:inline">Каталог</span>
+                        </Link>
+                        <Link
                             to="/dashboard"
-                            className={({ isActive }) =>
-                                `${linkBase} ${isActive
-                                    ? 'bg-blue-50 text-blue-700'
-                                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                                }`
-                            }
+                            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all"
                         >
-                            Мои заявки
-                        </NavLink>
+                            <User className="w-5 h-5" />
+                            <span className="hidden md:inline">Кабинет</span>
+                        </Link>
                     </div>
                 </div>
             </nav>
-
-            <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
-                {children}
-            </main>
-
-            <footer className="border-t border-slate-200/70 bg-white/60">
-                <div className="mx-auto max-w-6xl px-4 py-4 text-xs text-slate-500 sm:px-6">
-                    © {new Date().getFullYear()} CampusClubs — студенческие клубы кампуса
-                </div>
-            </footer>
+            <main>{children}</main>
         </div>
     );
 }
@@ -80,7 +54,8 @@ export default function App() {
         <BrowserRouter>
             <Layout>
                 <Routes>
-                    <Route path="/" element={<Catalog />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/catalog" element={<Catalog />} />
                     <Route path="/org/:id" element={<OrgDetail />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                 </Routes>
