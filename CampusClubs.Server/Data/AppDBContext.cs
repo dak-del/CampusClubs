@@ -10,6 +10,9 @@ namespace CampusClubs.Server.Data
         public DbSet<Club> Clubs { get; set; }
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationAnswer> ApplicationAnswers { get; set; }
+        public DbSet<ApplicationHistory> ApplicationHistories { get; set; }
+        public DbSet<ClubMember> ClubMembers { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

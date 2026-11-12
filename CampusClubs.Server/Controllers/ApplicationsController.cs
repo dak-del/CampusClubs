@@ -32,17 +32,21 @@ namespace CampusClubs.Server.Controllers
         public async Task<IActionResult> GetUserApplications(int userID)
         {
             var apps = await _db.Applications
-                .Include(a => a.Answers)
-                .Include(a => a.ClubID)
                 .Where(a => a.UserID == userID)
-                .Select(a => new
-                {
-                    a.ID,
-                    ClubName = _db.Clubs.FirstOrDefault(c => c.ID == a.ClubID)!.Name,
-                    a.Status,
-                    a.CreatedAt
-                })
-                .ToListAsync();
+        .Select(a => new
+        {
+            a.ID,
+            ClubName = a.Club != null ? a.Club.Name : "Неизвестно",
+            a.Status,
+            a.CreatedAt,
+            Comment = _db.ApplicationHistories
+                .Where(h => h.ApplicationID == a.ID)
+                .OrderByDescending(h => h.ChangedAt)
+                .Select(h => h.Comment)
+                .FirstOrDefault()
+        })
+        .OrderByDescending(a => a.CreatedAt)
+        .ToListAsync();
             return Ok(apps);
         }
         [HttpGet("ID")]
